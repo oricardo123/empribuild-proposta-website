@@ -1,0 +1,9 @@
+"use strict";
+const $=s=>document.querySelector(s), $$=s=>Array.from(document.querySelectorAll(s));
+const menu=$('.menu'),nav=$('#nav');menu.addEventListener('click',()=>{const open=menu.getAttribute('aria-expanded')!=='true';menu.setAttribute('aria-expanded',String(open));nav.classList.toggle('open',open)});nav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{menu.setAttribute('aria-expanded','false');nav.classList.remove('open')}));document.addEventListener('keydown',e=>{if(e.key==='Escape'){menu.setAttribute('aria-expanded','false');nav.classList.remove('open')}});
+$$('form').forEach(f=>f.addEventListener('submit',e=>e.preventDefault()));
+function chosen(buttons,active){buttons.forEach(b=>b.setAttribute('aria-pressed',String(b===active)))}
+function showSummary(text){$('#summary').hidden=false;$('#summary-text').textContent=text}
+function invalidate(){ $('#summary').hidden=true; }
+$$('select,input,textarea').forEach(e=>{e.addEventListener('change',invalidate);e.addEventListener('input',invalidate)});
+let area='Engenharia e construção',priority='Âmbito da intervenção';$$('[data-area]').forEach(b=>b.addEventListener('click',()=>{area=b.dataset.area;chosen($$('[data-area]'),b);$('#selected-area').textContent=area;invalidate()}));$$('[data-priority]').forEach(b=>b.addEventListener('click',()=>{priority=b.dataset.priority;chosen($$('[data-priority]'),b);invalidate()}));$$('[data-filter]').forEach(b=>b.addEventListener('click',()=>{chosen($$('[data-filter]'),b);let count=0;$$('[data-kind]').forEach(f=>{f.hidden=b.dataset.filter!=='all'&&f.dataset.kind!==b.dataset.filter;if(!f.hidden)count++});$('#filter-result').textContent=count+(count===1?' fotografia':' fotografias')+' · Fonte: portefólio oficial Empribuild'}));$('#make-summary').addEventListener('click',()=>showSummary('Área: '+area+'\nFase: '+$('#phase').value+'\nPrioridade: '+priority+'\nIntenção: '+($('#intention').value.trim()||'Por definir')));
